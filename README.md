@@ -1,5 +1,9 @@
 # PycordWithFastAPI
 
+## 環境
+
+Python 3.9.7
+
 ## 概要
 
 Pycord(discord.py)とFastAPIを同時に使うサンプルコード
@@ -10,6 +14,10 @@ Pycord(discord.py)とFastAPIを同時に使うサンプルコード
 * FastAPIのエンドポイントからBOTのCogsをリロード
 * DiscordBotのスタートアップ時のログ出力
 * DiscordBotのユーザ入力にフックしてユーザにメンションを送る
+
+## Environment
+
+Python 3.9.7
 
 ## Overview
 
