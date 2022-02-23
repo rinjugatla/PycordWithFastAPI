@@ -10,7 +10,7 @@ from apis.v1 import ApiV1
 class DiscordBot():
     def __init__(self):
         self.app = FastAPI()
-        self.bot = commands.Bot()
+        self.bot = commands.Bot(heartbeat_timeout=20)
 
         api_v1 = ApiV1(self.bot)
         self.app.include_router(api_v1.router)
