@@ -13,6 +13,14 @@ class MyCog(commands.Cog):
         """
         print(f'BOT起動: {self.bot.user.name}')
 
+    @commands.Cog.listener(name='on_socket_raw_receive')
+    async def on_socket_raw_receive(self, message: str):
+        """受信メッセージをすべてログに出力
+
+        利用する場合はBOT起動時にis_debug=Trueを指定
+        """
+        print(f'on_socket_raw_receive: {message}')
+
     # reload_extension確認時にコメントアウト解除
     # @commands.Cog.listener(name='on_typing')
     # async def on_typing(self, channel: discord.TextChannel, user: discord.User, when: datetime.datetime):

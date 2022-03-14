@@ -9,12 +9,13 @@ from apis.v1 import ApiV1
 
 
 class DiscordBot():
-    def __init__(self):
+    def __init__(self, is_debug: bool = False):
         self.app = FastAPI()
         self.bot = commands.Bot(
             heartbeat_timeout=20,
             intents=self.create_intents(),
-            chunk_guilds_at_startup=False)
+            chunk_guilds_at_startup=False,
+            enable_debug_events = is_debug)
 
         api_v1 = ApiV1(self.bot)
         self.app.include_router(api_v1.router)
