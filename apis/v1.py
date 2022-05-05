@@ -1,7 +1,9 @@
+import sys
 import discord
 from discord.ext import commands
 from fastapi import APIRouter, Request
 import const
+from models.basic_post_api_model import BasicBotPostApiModel
 from models.bot_reload_api_model import BotReloadApiModel
 from models.basic_response_model import BasicResponseModel
 
@@ -52,3 +54,17 @@ class ApiV1(commands.Cog):
                 self.bot.reload_extension(name)
             return {'message': 'BOTリロード完了'}
             
+        @self.router.post('/bot/quit', response_model=BasicResponseModel)
+        async def bot_quit(request: Request, model: BasicBotPostApiModel):
+            """DiscordBotを終了
+
+            Args:
+                request (Request): _description_
+                model (BasicBotPostApiModel): _description_
+            """
+            if model.token != const.API_TOKEN:
+                ip = request.client.host
+                return {'message': f'不正なTOKEN {ip}'}
+
+            await self.bot.close()
+            sys.exit()
