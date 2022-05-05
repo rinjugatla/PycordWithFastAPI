@@ -2,4 +2,4 @@ from pydantic import BaseModel, Field
 
 
 class BasicBotPostApiModel(BaseModel):
-    token: str
+    body_test: str

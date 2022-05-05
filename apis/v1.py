@@ -4,7 +4,6 @@ from discord.ext import commands
 from fastapi import APIRouter, Request
 import const
 from models.basic_post_api_model import BasicBotPostApiModel
-from models.bot_reload_api_model import BotReloadApiModel
 from models.basic_response_model import BasicResponseModel
 
 
@@ -38,15 +37,29 @@ class ApiV1(commands.Cog):
             """
             return {'message': f'hello {name}'}
 
+        @self.router.post('/body_test', response_model=BasicResponseModel)
+        async def body_test(request: Request, model: BasicBotPostApiModel):
+            """Bodyに{"body_test": "hoge"}がない場合エラー
+
+            Args:
+                request (Request): _description_
+                model (BasicBotPostApiModel): _description_
+
+            Returns:
+                _type_: _description_
+            """
+            return {'message': 'ok'}
+
+
         @self.router.post('/bot/reload', response_model=BasicResponseModel)
-        async def bot_reload(request: Request, model: BotReloadApiModel):
+        async def bot_reload(request: Request):
             """DiscordBotのcogをリロード
 
             Args:
                 request (Request): _description_
-                model (BotReloadApiModel): POSTパラメータ
             """
-            if model.token != const.API_TOKEN:
+            is_valid = self.is_valid_token(request)
+            if not is_valid:
                 ip = request.client.host
                 return {'message': f'不正なTOKEN {ip}'}
 
@@ -55,16 +68,26 @@ class ApiV1(commands.Cog):
             return {'message': 'BOTリロード完了'}
             
         @self.router.post('/bot/quit', response_model=BasicResponseModel)
-        async def bot_quit(request: Request, model: BasicBotPostApiModel):
+        async def bot_quit(request: Request):
             """DiscordBotを終了
 
             Args:
                 request (Request): _description_
-                model (BasicBotPostApiModel): _description_
             """
-            if model.token != const.API_TOKEN:
+            is_valid = self.is_valid_token(request)
+            if not is_valid:
                 ip = request.client.host
                 return {'message': f'不正なTOKEN {ip}'}
 
             await self.bot.close()
             sys.exit()
+
+    def is_valid_token(self, request: Request) -> bool:
+        """API TOKENが有効か
+        """
+        headers = request.headers
+        if not ('token' in headers):
+            return False
+        
+        is_valid = headers.get('token') == const.API_TOKEN
+        return is_valid
